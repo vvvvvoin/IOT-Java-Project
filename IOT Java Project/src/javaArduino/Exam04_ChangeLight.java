@@ -58,7 +58,7 @@ public class Exam04_ChangeLight extends Application {
 							printMSG("클라이언트 접속");
 							br = new BufferedReader(new InputStreamReader(s.getInputStream()));
 							pr =  new PrintWriter(new OutputStreamWriter(s.getOutputStream()));
-							String msg = "";
+							String msg = null;
 							while(true){
 								if((msg = br.readLine()) != null) {
 										msg = msg.substring(6);
@@ -107,35 +107,25 @@ public class Exam04_ChangeLight extends Application {
 					OutputStream out = serialPort.getOutputStream();
 					bw = new BufferedWriter(new OutputStreamWriter(out));
 					br = new BufferedReader(new InputStreamReader(in));
-//					Runnable r2 =  new Runnable() {
-//						
-//						@Override
-//						public void run() {
-//							byte[] buffer = new byte[1024];
-//							int len = -1;
-//							try {
-//								while((len = in.read(buffer)) != -1) {
-//									System.out.print(new String(buffer, 0, len));
-//									String msg = new String(buffer, 0, len);
-//									System.out.println(msg);
-//									if(msg.equals("LED ON ACK")) {
-//										printMSG("LED_ON_Ack");
-//										bw.write(msg, 0, msg.length());
-//										bw.flush();
-//									}
-//									if(msg.equals("LED OFF ACK")) {
-//										printMSG("LED_OFF_Ack");
-//										bw.write(msg, 0, msg.length());
-//										bw.flush();
-//									}
-//								}
-//							} catch (Exception e) {
-//								e.printStackTrace();
-//							}
-//							
-//						}};
-//					Thread t2 = new Thread(r2);
-//					t2.start();
+					Runnable r2 =  new Runnable() {
+						
+						@Override
+						public void run() {
+							byte[] buffer = new byte[1024];
+							int len = -1;
+							try {
+								while((len = in.read(buffer)) != -1) {
+									System.out.print(new String(buffer, 0, len));
+									String msg = new String(buffer, 0, len);
+									printMSG(msg);
+								}
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+							
+						}};
+					Thread t2 = new Thread(r2);
+					t2.start();
 					
 					
 				} else {
