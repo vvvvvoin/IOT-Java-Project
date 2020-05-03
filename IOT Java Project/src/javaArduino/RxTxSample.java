@@ -26,12 +26,12 @@ public class RxTxSample extends Application  {
 	private TextArea ta;
 	private Button btn;
 	private ServerSocket server;
+	private SerialPort serialPort;
 	
 	private BufferedReader socketBR;
 	private BufferedReader portBR;
 	private PrintWriter socketPR;
 	private BufferedWriter portPR;
-	private SerialPort serialPort;
 
 	private void printMSG(String msg) {
 		Platform.runLater(() -> {
@@ -113,7 +113,7 @@ public class RxTxSample extends Application  {
 
 		Scene scene = new Scene(root); // borderPane을 포함하는 장명 생성
 		primaryStage.setScene(scene); // windows의 화면을 scene으로 설정
-		primaryStage.setTitle("예제용 JavaFX");
+		primaryStage.setTitle("프로젝트 - 자바 네트워크 샘플");
 		primaryStage.setOnCloseRequest(e -> {
 			System.exit(0);
 		});
