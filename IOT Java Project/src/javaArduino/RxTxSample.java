@@ -28,10 +28,11 @@ public class RxTxSample extends Application  {
 	private ServerSocket server;
 	private SerialPort serialPort;
 	
-	private BufferedReader socketBR;
 	private BufferedReader portBR;
+	private BufferedWriter portBW;
+	private BufferedReader socketBR;
 	private PrintWriter socketPR;
-	private BufferedWriter portPR;
+	//private BufferedWriter socketBW;
 
 	private void printMSG(String msg) {
 		Platform.runLater(() -> {
@@ -68,11 +69,13 @@ public class RxTxSample extends Application  {
 								
 								if(commPort instanceof SerialPort) {
 									serialPort = (SerialPort) commPort;
-									serialPort.setSerialPortParams(9600, SerialPort.DATABITS_8, 
-											SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
-									//데이터 통신을 하기 위해서 stream을 연다
+									serialPort.setSerialPortParams(
+											9600, SerialPort.DATABITS_8, 
+											SerialPort.STOPBITS_1, 
+											SerialPort.PARITY_NONE);
+									
 									portBR = new BufferedReader(new InputStreamReader(serialPort.getInputStream()));
-									portPR = new BufferedWriter(new OutputStreamWriter(serialPort.getOutputStream()));
+									portBW = new BufferedWriter(new OutputStreamWriter(serialPort.getOutputStream()));
 								} else {
 									System.out.println("serialport만 이용가능");
 								}
@@ -82,18 +85,29 @@ public class RxTxSample extends Application  {
 							e.printStackTrace();
 						}
 						socketBR = new BufferedReader(new InputStreamReader(s.getInputStream()));
+						
 						socketPR = new PrintWriter(new OutputStreamWriter(s.getOutputStream()));
+						//socketBW = new BufferedWriter(new OutputStreamWriter(s.getOutputStream()));
+						
 						serialPort.addEventListener(new SerialListener3(portBR, socketPR));
+						//serialPort.addEventListener(new SerialListener3(portBR, socketBW));
+						
 						serialPort.notifyOnDataAvailable(true);
 						
 						String msg = null;
 						while (true) {
 							if ((msg = socketBR.readLine()) != null) {
+								//안드로이드에서 받고 아두이노에 보내는 메세지
 								System.out.println("안드로이드에서 받고 아두이노에 보내는 메세지 : " + msg);
 								printMSG(msg);
-								portPR.write(msg, 0, msg.length() );
-								portPR.newLine();
-								portPR.flush();
+								portBW.write(msg, 0, msg.length() );
+								portBW.newLine();
+								portBW.flush();
+								//newLine()
+								//Writes a line separator. 
+								//The line separator string is defined by thesystem property line.
+								//separator, and is not necessarily a singlenewline ('\n') character.
+								//printWriter로 포트에 보내기로
 							}
 						}
 					} catch (Exception e2) {
@@ -143,9 +157,12 @@ class SerialListener3 implements SerialPortEventListener{
 	public void serialEvent(SerialPortEvent arg0) {
 		if(arg0.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
 			try {
+				//아두이노에서 받고 안드로이드에 보내는 메세지
 				msg = br.readLine();
 				System.out.println("아두이노에서 받고 안드로이드에 보내는 메세지 : " + msg);
 				pr.println(msg);
+				pr.flush();
+				//PrintWriter로 되면 PrintWriter로 모두 변경
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
