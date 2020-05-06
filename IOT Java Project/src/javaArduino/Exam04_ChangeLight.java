@@ -112,7 +112,7 @@ public class Exam04_ChangeLight extends Application  {
 							SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
 					//데이터 통신을 하기 위해서 stream을 연다
 					br2 = new BufferedReader(new InputStreamReader(serialPort.getInputStream()));
-					serialPort.addEventListener(new SerialListener3(br2));
+					serialPort.addEventListener(new SerialListener12312(br2));
 					serialPort.notifyOnDataAvailable(true);
 				} else {
 					System.out.println("serialport만 이용가능");
@@ -128,11 +128,11 @@ public class Exam04_ChangeLight extends Application  {
 	}
 }
 
-class SerialListener3 implements SerialPortEventListener{
+class SerialListener12312 implements SerialPortEventListener{
 	private BufferedReader br;
 	private String ms;
 	
-	public SerialListener3(BufferedReader br) {
+	public SerialListener12312(BufferedReader br) {
 		super();
 		this.br = br;
 	}
