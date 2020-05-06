@@ -1,6 +1,8 @@
 package javaArduino;
 
+import java.io.BufferedReader;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 
 import gnu.io.CommPort;
@@ -9,22 +11,21 @@ import gnu.io.SerialPort;
 import gnu.io.SerialPortEvent;
 import gnu.io.SerialPortEventListener;
 
-class SerialListener implements SerialPortEventListener{
-	private InputStream in;
+class SerialListener2 implements SerialPortEventListener{
+	private BufferedReader br;
+	private String ms;
 	
-	public SerialListener(InputStream in) {
+	public SerialListener2(BufferedReader br) {
 		super();
-		this.in = in;
+		this.br = br;
 	}
 
 	@Override
 	public void serialEvent(SerialPortEvent arg0) {
 		if(arg0.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
 			try {
-				int k = in.available();
-				byte[] data = new byte[k];
-				in.read(data, 0, k);
-				System.out.print("받은 데이터 : " + new String(data));
+				ms = br.readLine();
+				System.out.println(ms);
 				
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -34,7 +35,8 @@ class SerialListener implements SerialPortEventListener{
 	
 }
 
-public class Exam02_ArduinoSerialUsingEvent {
+public class Exam02_ArduinoSerialUsingEvent2 {
+	private static BufferedReader br;
 	public static void main(String[] args) {
 		CommPortIdentifier portIdentifier = null;
 		try {
@@ -51,8 +53,8 @@ public class Exam02_ArduinoSerialUsingEvent {
 					//데이터 통신을 하기 위해서 stream을 연다
 					InputStream in = serialPort.getInputStream();
 					OutputStream out = serialPort.getOutputStream();
-					
-					serialPort.addEventListener(new SerialListener(in));
+					br = new BufferedReader(new InputStreamReader(serialPort.getInputStream()));
+					serialPort.addEventListener(new SerialListener2(br));
 					serialPort.notifyOnDataAvailable(true);
 				} else {
 					System.out.println("serialport만 이용가능");
